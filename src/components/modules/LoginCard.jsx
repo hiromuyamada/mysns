@@ -17,7 +17,7 @@ export const LoginCard = (props) =>{
             history("../../threads");
         })
         .catch((error) => {
-            alert(error.code, error.message);
+            alert("メールアドレスまたはパスワードが正しくありません。");
         });
     }
 

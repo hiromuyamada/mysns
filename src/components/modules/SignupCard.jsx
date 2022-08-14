@@ -14,10 +14,11 @@ export const SignupCard = (props) =>{
         firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
             const { user } = userCredential;
+            alert("ユーザー登録が完了しました。\nログインしてお楽しみください");
             history("../../login");
         })
         .catch((error) => {
-            alert("メールアドレスまたはパスワードが正しくありません。");
+            alert("メールアドレスまたはパスワードの形式が不正です。\nパスワードは6文字以上で入力してください。");
         });
     }
 
