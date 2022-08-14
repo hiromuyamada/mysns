@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { InputCard } from "../components/modules/InputCard"
+import { SignupCard } from "../components/modules/SignupCard";
 
 export const Signup = () =>{
     const labels = {title:'サインアップ',link:'ログインはこちら'};
@@ -8,7 +8,7 @@ export const Signup = () =>{
         <>
             <Box className="text-center" style={{marginTop:'100px'}}>
                 <p>利用にはユーザー登録が必要です。</p>
-                <InputCard labels={labels} path={path} />
+                <SignupCard labels={labels} path={path} />
             </Box>
         </>
     )
