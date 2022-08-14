@@ -4,7 +4,7 @@ export const PostedCard = (props) =>{
     const {username,content,time} = props;
     return(
         <Card variant="outlined" className="border-2 mb-4">
-            <CardContent>
+            <CardContent sx={{textAlign:"left"}}>
                 <Typography variant="h5">
                     {username}
                 </Typography>
