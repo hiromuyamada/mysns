@@ -1,7 +1,7 @@
 import { Box, Button,Card,CardContent,CardHeader,TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import firebase from "firebase";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const LoginCard = (props) =>{ 
     const {title,link} = props.labels;
@@ -9,6 +9,15 @@ export const LoginCard = (props) =>{
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
     const history = useNavigate();
+
+    useEffect(()=>{
+       const unsubscribe = firebase.auth().onAuthStateChanged((user)=>{
+            if(user){
+                history("../../threads");
+            }
+        });
+        return unsubscribe;
+    },[]);
 
     function handleClick(){
         firebase.auth().signInWithEmailAndPassword(email, password)

@@ -11,7 +11,6 @@ firebase.initializeApp(firebaseConfig);
 function App() {
   return (
     <div className="App">
-      <Header />
       <Router />
     </div>
   );

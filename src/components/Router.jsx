@@ -12,6 +12,7 @@ export const Router = () =>{
     return(
         <>
         <BrowserRouter>
+            <Header />
             <Routes>
                 <Route path="login" element={<Login />} />
                 <Route path="signup" element={<Signup />} />
