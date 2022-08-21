@@ -4,6 +4,8 @@ import { Router } from './components/Router';
 import firebase from 'firebase';
 import { firebaseConfig } from './env';
 
+require('firebase/firestore');
+
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 

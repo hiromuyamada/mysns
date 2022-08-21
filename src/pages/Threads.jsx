@@ -4,6 +4,7 @@ import { PostedCard } from "../components/modules/PostedCard";
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import { useState } from "react";
+import firebase from "firebase";
 
 export const Threads = () =>{
 
@@ -23,6 +24,19 @@ export const Threads = () =>{
         opacity:!isOpen ? "0":"1",
         transition:"300ms",
         position:"fixed",
+    }
+
+    const [bodyText,setBodyText] = useState('');
+    const handleClick = () => {
+        const {currentUser} = firebase.auth();
+        const db = firebase.firestore();
+        const ref = db.collection(`users/${currentUser.uid}/posts`);
+        ref.add({
+            bodyText,
+            createdAt:new Date(),  
+        }).then((docRef) =>{
+            console.log('created!',docRef.id);
+        }).catch((error)=>console.log("Error",error));
     }
 
     return(
@@ -70,8 +84,8 @@ export const Threads = () =>{
                         <Box className="w-50 m-auto" style={slideUpStyle}>
                             <Card variant="outlined">
                                 <CardContent className="text-center">
-                                    <TextField fullWidth label="投稿" multiline rows={6}/>
-                                    <Button className="mt-3" variant='outlined'>送信</Button>
+                                    <TextField value={bodyText} onChange={(val)=>setBodyText(val.target.value)} fullWidth label="投稿" multiline rows={6}/>
+                                    <Button className="mt-3" variant='outlined' onClick={handleClick}>送信</Button>
                                 </CardContent>
                             </Card>
                         </Box>
