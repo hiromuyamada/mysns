@@ -3,11 +3,15 @@ import { MenuList } from "../components/modules/MenuList";
 import { PostedCard } from "../components/modules/PostedCard";
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import firebase from "firebase";
+import { UseTimestampToDate } from "../hooks/useTimestampToDate";
 
 export const Threads = () =>{
 
     const [isOpen,setIsOpen] = useState(false);
+    const [posts, setPosts] = useState([]);
 
     const iconButtonStyle = {
         width:"5em",
@@ -24,6 +28,51 @@ export const Threads = () =>{
         transition:"300ms",
         position:"fixed",
     }
+
+    //投稿する
+    const [bodyText,setBodyText] = useState('');
+    const handleClick = () => {
+        const {currentUser} = firebase.auth();
+        const db = firebase.firestore();
+        const ref = db.collection(`users/${currentUser.uid}/posts`);
+        ref.add({
+            userName:currentUser.email,
+            bodyText,
+            createdAt:firebase.firestore.FieldValue.serverTimestamp(),  
+        }).then((docRef) =>{
+            console.log('created!',docRef.id);
+        }).catch((error)=>console.log("Error",error));
+    }
+
+    //DBから投稿取得
+    useEffect(()=>{
+        const db = firebase.firestore();
+        const {currentUser} = firebase.auth();
+        let unsubscribe = () =>{};
+        // if(currentUser){
+            const ref = db.collection(`users/${currentUser.uid}/posts`).orderBy('createdAt','desc');
+            unsubscribe = ref.onSnapshot((snapshot)=>{
+                const userPosts = [];
+                snapshot.forEach((doc)=>{
+                    console.log(doc.id,doc.data());
+                    const data = doc.data();
+                    userPosts.push({
+                        id:doc.id,
+                        username:data.userName,
+                        bodyText:data.bodyText,
+                        createdAt:UseTimestampToDate(data.createdAt.seconds),
+                        // createdAt:dayjs(data.createdAt.seconds).format('YYYY/MM/DD HH:mm'),
+                    });
+                });
+                setPosts(userPosts);
+                // console.log(posts);
+            },(error) => {
+                console.log(error);
+                alert('データの読み込みに失敗しました。');
+            });
+        // }
+        return unsubscribe;
+    },[]);
 
     return(
         <>
@@ -48,12 +97,15 @@ export const Threads = () =>{
             </Grid>
             <Grid item xs={10}>
                 <Box className="w-75 m-auto">
-                    <PostedCard username='ﾁｬﾝ' content='きょうはディズニーランドにいきました。'  time='1970/01/11'/>
-                    <PostedCard username='こめ' content='きのうは花火をみににいきまちた。' time='1990/01/11' />
-                    <PostedCard username='あーちゃん' content='きょうはおねむの日でした。' time='2110/01/14' />
-                    <PostedCard username='あーちゃん' content='北海道旅行のおししめ教えて下さい' time='2022/08/13' />
-                    <PostedCard username='ばちまる' content='おたる' time='2022/08/13' />
-                    <PostedCard username='ひらむ' content='はこだて' time='2022/08/13' />
+                    {posts.map((post)=>{
+                        console.log(post);
+                       return  (
+                        <PostedCard 
+                        username={post.username} 
+                        content={post.bodyText}  
+                        time={post.createdAt} />
+                        )}
+                    )}
                 </Box>
                 <Box style={{textAlign:"right",position:"fixed",bottom:"5em",right:"5em"}}>
                     <IconButton onClick={() => setIsOpen(!isOpen)}>
@@ -70,8 +122,8 @@ export const Threads = () =>{
                         <Box className="w-50 m-auto" style={slideUpStyle}>
                             <Card variant="outlined">
                                 <CardContent className="text-center">
-                                    <TextField fullWidth label="投稿" multiline rows={6}/>
-                                    <Button className="mt-3" variant='outlined'>送信</Button>
+                                    <TextField value={bodyText} onChange={(val)=>setBodyText(val.target.value)} fullWidth label="投稿する" multiline rows={6}/>
+                                    <Button className="mt-3" variant='outlined' onClick={handleClick}>送信</Button>
                                 </CardContent>
                             </Card>
                         </Box>

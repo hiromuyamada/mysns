@@ -35,7 +35,7 @@ export const LoginCard = (props) =>{
             <CardHeader title={title} />
             <CardContent>
                 <TextField fullWidth label="email" value={email} onChange={(val)=> setEmail(val.target.value)} />
-                <TextField className="mt-2" fullWidth label="Password" value={password} onChange={(val)=> setPassword(val.target.value)}/>
+                <TextField type={'password'} className="mt-2" fullWidth label="Password" value={password} onChange={(val)=> setPassword(val.target.value)}/>
                 <Button className="mt-3" variant='outlined'
                 onClick={handleClick}
                 >送信</Button>
