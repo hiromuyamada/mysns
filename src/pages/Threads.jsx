@@ -8,11 +8,16 @@ import dayjs from "dayjs";
 import firebase from "firebase";
 import { UseTimestampToDate } from "../hooks/useTimestampToDate";
 import { useNavigate } from "react-router-dom";
+import { CategoryList } from "../components/modules/CategoryList";
 
 export const Threads = () =>{
 
     const [isOpen,setIsOpen] = useState(false);
     const [posts, setPosts] = useState([]);
+    const [currentCategory,setCurrentCategory] = useState('default');
+    const [bodyText,setBodyText] = useState('');
+    const [me,setMe] = useState('');
+
     const history = useNavigate();
 
     const iconButtonStyle = {
@@ -32,17 +37,19 @@ export const Threads = () =>{
     }
 
     //投稿する
-    const [bodyText,setBodyText] = useState('');
     const handleClick = () => {
         const {currentUser} = firebase.auth();
         const db = firebase.firestore();
-        const ref = db.collection(`users/${currentUser.uid}/posts`);
+        const ref = db.collection(`posts`);
         ref.add({
             userName:currentUser.email,
             bodyText,
             createdAt:firebase.firestore.FieldValue.serverTimestamp(),  
+            category:currentCategory,
+            like:0,
         }).then((docRef) =>{
             console.log('created!',docRef.id);
+            setBodyText('');
         }).catch((error)=>console.log("Error",error));
     }
 
@@ -52,63 +59,51 @@ export const Threads = () =>{
         const {currentUser} = firebase.auth();
         let unsubscribe = () =>{};
         if(currentUser){
-            const ref = db.collection(`users/${currentUser.uid}/posts`).orderBy('createdAt','desc');
+            setMe(currentUser);
+            const ref = db.collection(`posts`).where('category','==',currentCategory).orderBy('createdAt','desc');
             unsubscribe = ref.onSnapshot((snapshot)=>{
                 const userPosts = [];
                 snapshot.forEach((doc)=>{
-                    console.log(doc.id,doc.data());
                     const data = doc.data();
                     userPosts.push({
                         id:doc.id,
                         username:data.userName,
                         bodyText:data.bodyText,
                         createdAt:UseTimestampToDate(data.createdAt.seconds),
-                        // createdAt:dayjs(data.createdAt.seconds).format('YYYY/MM/DD HH:mm'),
                     });
                 });
                 setPosts(userPosts);
-                // console.log(posts);
             },(error) => {
                 console.log(error);
-                alert('データの読み込みに失敗しました。');
+                alert('データの読み込みに失敗しました。\nもう一度お試しください');
             });
         }
         else{
             history('../login');
         }
         return unsubscribe;
-    },[]);
+    },[currentCategory]);
 
     return(
         <>
         <Grid container className="mt-5">
             <Grid item xs={2} className="h-100">
                 <Box className="text-center">
-                    <Card variant="outlined">
-                        <CardContent>
-                            <List>
-                                <ListItem sx={{borderBottom:'1px solid #fd7e14'}}>
-                                    <ListItemText primary='カテゴリ一覧' />
-                                </ListItem>
-                                <MenuList text='ちゃん１' />
-                                <MenuList text='ちゃん2' />
-                                <MenuList text='夏のちゃん' />
-                                <MenuList text='しとーんず' />
-                                <MenuList text='おねむちゃん' />
-                            </List>
-                    </CardContent>
-                    </Card>
+                            <CategoryList setCurrentCategory={setCurrentCategory} currentCategory={currentCategory} />
                 </Box>
             </Grid>
             <Grid item xs={10}>
                 <Box className="w-75 m-auto">
                     {posts.map((post)=>{
-                        console.log(post);
                        return  (
                         <PostedCard 
+                        key={post.id}
+                        id={post.id}
                         username={post.username} 
                         content={post.bodyText}  
-                        time={post.createdAt} />
+                        time={post.createdAt}
+                        isMyPost={post.username == me.email ?true:false}
+                        />
                         )}
                     )}
                 </Box>
@@ -128,7 +123,7 @@ export const Threads = () =>{
                             <Card variant="outlined">
                                 <CardContent className="text-center">
                                     <TextField value={bodyText} onChange={(val)=>setBodyText(val.target.value)} fullWidth label="投稿する" multiline rows={6}/>
-                                    <Button className="mt-3" variant='outlined' onClick={handleClick}>送信</Button>
+                                    <Button disabled={bodyText==''?true:false} className="mt-3" variant='outlined' onClick={handleClick}>送信</Button>
                                 </CardContent>
                             </Card>
                         </Box>

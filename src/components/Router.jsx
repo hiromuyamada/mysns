@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter,Routes,Route } from "react-router-dom";
+import { AddCategory } from "../pages/admin/AddCategory";
 import { Categories } from "../pages/Categories";
 import { Home } from "../pages/Home";
 import { Login } from "../pages/Login";
@@ -19,6 +20,7 @@ export const Router = () =>{
                 <Route path="home" element={<Home />} />
                 <Route path="categories" element={<Categories />} />
                 <Route path="threads" element={<Threads />} />
+                <Route path='admin/addcategory' element={<AddCategory />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
