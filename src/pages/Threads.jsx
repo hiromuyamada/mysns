@@ -44,7 +44,7 @@ export const Threads = () =>{
         const db = firebase.firestore();
         const ref = db.collection(`posts`);
         ref.add({
-            userName:currentUser.email,
+            userName:currentUser.displayName,
             bodyText,
             createdAt:firebase.firestore.FieldValue.serverTimestamp(),  
             category:currentCategory,
@@ -147,7 +147,7 @@ export const Threads = () =>{
                         username={post.username} 
                         content={post.bodyText}  
                         time={post.createdAt}
-                        isMyPost={post.username == me.email ?true:false}
+                        isMyPost={post.username == me.displayName ?true:false}
                         />
                         )}
                     )}

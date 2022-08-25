@@ -8,16 +8,19 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from '@mui/material';
 import { LogoutButton } from './LogoutButton';
 import { useEffect, useState } from 'react';
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import firebase from 'firebase';
 
 
 export const Header = () => {
   const [isLogin,setIsLogin] = useState(false);
+  const [me,setMe] = useState();
 
   useEffect(()=>{
     const unsubscribe = firebase.auth().onAuthStateChanged((user)=>{
         if(user){
             setIsLogin(true);
+            setMe(user.email);
         }
     });
     return unsubscribe;
@@ -36,6 +39,13 @@ export const Header = () => {
           >
             <MenuIcon />
           </IconButton>
+          {isLogin
+          && 
+          <>
+          <AccountCircleRoundedIcon />
+          <Typography sx={{paddingLeft:"5px"}}>{me}</Typography>
+          </>
+          }
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             mysns
           </Typography>

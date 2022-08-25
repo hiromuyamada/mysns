@@ -4,6 +4,7 @@ import { AddCategory } from "../pages/admin/AddCategory";
 import { Categories } from "../pages/Categories";
 import { Home } from "../pages/Home";
 import { Login } from "../pages/Login";
+import { MyPage } from "../pages/MyPage";
 import { NotFound } from "../pages/NotFound";
 import { Signup } from "../pages/Signup";
 import { Threads } from "../pages/Threads";
@@ -20,6 +21,7 @@ export const Router = () =>{
                 <Route path="home" element={<Home />} />
                 <Route path="categories" element={<Categories />} />
                 <Route path="threads" element={<Threads />} />
+                <Route path="mypage" element={<MyPage />} />
                 <Route path='admin/addcategory' element={<AddCategory />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
