@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, CardHeader, Grid, IconButton, List, ListItem, ListItemText, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, CardHeader, Grid, IconButton, List, ListItem, ListItemText, TextField, Typography, useEventCallback } from "@mui/material";
 import { MenuList } from "../components/modules/MenuList";
 import { PostedCard } from "../components/modules/PostedCard";
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
@@ -7,11 +7,13 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import firebase from "firebase";
 import { UseTimestampToDate } from "../hooks/useTimestampToDate";
+import { useNavigate } from "react-router-dom";
 
 export const Threads = () =>{
 
     const [isOpen,setIsOpen] = useState(false);
     const [posts, setPosts] = useState([]);
+    const history = useNavigate();
 
     const iconButtonStyle = {
         width:"5em",
@@ -49,7 +51,7 @@ export const Threads = () =>{
         const db = firebase.firestore();
         const {currentUser} = firebase.auth();
         let unsubscribe = () =>{};
-        // if(currentUser){
+        if(currentUser){
             const ref = db.collection(`users/${currentUser.uid}/posts`).orderBy('createdAt','desc');
             unsubscribe = ref.onSnapshot((snapshot)=>{
                 const userPosts = [];
@@ -70,7 +72,10 @@ export const Threads = () =>{
                 console.log(error);
                 alert('データの読み込みに失敗しました。');
             });
-        // }
+        }
+        else{
+            history('../login');
+        }
         return unsubscribe;
     },[]);
 
