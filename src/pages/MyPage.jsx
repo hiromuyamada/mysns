@@ -5,12 +5,16 @@ import { Typography } from "@mui/material";
 
 export const MyPage = () =>{
     const [me,setMe] = useState();
+    const [email,setEmail] = useState();
+    const [displayName,setDisplayName] = useState();
+
     const history = useNavigate();
     useEffect(()=>{
         const unsubscribe = firebase.auth().onAuthStateChanged((user)=>{
             if(user){
-                console.log(user);
                 setMe(user);
+                setEmail(user.email);
+                setDisplayName(user.displayName);
             }else{
                 history('../login');
             }
@@ -19,8 +23,13 @@ export const MyPage = () =>{
       },[]);
 
       return(
-        <Typography>
-            {me.email}
-        </Typography>
+        <>
+            <Typography>
+                {email}
+            </Typography>
+            <Typography>
+                {displayName}
+            </Typography>
+        </>
       )
 }

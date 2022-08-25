@@ -10,17 +10,19 @@ import { LogoutButton } from './LogoutButton';
 import { useEffect, useState } from 'react';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import firebase from 'firebase';
+import { useNavigate } from 'react-router-dom';
 
 
 export const Header = () => {
   const [isLogin,setIsLogin] = useState(false);
   const [me,setMe] = useState();
+  const history = useNavigate();
 
   useEffect(()=>{
     const unsubscribe = firebase.auth().onAuthStateChanged((user)=>{
         if(user){
             setIsLogin(true);
-            setMe(user.email);
+            setMe(user.displayName);
         }
     });
     return unsubscribe;
@@ -42,8 +44,10 @@ export const Header = () => {
           {isLogin
           && 
           <>
-          <AccountCircleRoundedIcon />
-          <Typography sx={{paddingLeft:"5px"}}>{me}</Typography>
+          <IconButton onClick={()=>history('../mypage')}>
+            <AccountCircleRoundedIcon sx={{color:'#fff'}} />
+          </IconButton>
+          <Typography>{me}</Typography>
           </>
           }
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

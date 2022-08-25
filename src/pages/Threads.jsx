@@ -99,7 +99,7 @@ export const Threads = () =>{
                 const userPosts = [];
                 snapshot.forEach((doc)=>{
                     const data = doc.data();
-                    if(~data.bodyText.indexOf(searchWord)){
+                    if(~data.bodyText.indexOf(searchWord) || ~data.userName.indexOf(searchWord)){
                         userPosts.push({
                             id:doc.id,
                             username:data.userName,
