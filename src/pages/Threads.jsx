@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, CardHeader, Grid, IconButton, List, ListItem, ListItemText, TextField, Typography, useEventCallback } from "@mui/material";
+import { Box, Button, Card, CardContent, CardHeader, Grid, IconButton, InputBase, List, ListItem, ListItemText, OutlinedInput, TextField, Typography, useEventCallback } from "@mui/material";
 import { MenuList } from "../components/modules/MenuList";
 import { PostedCard } from "../components/modules/PostedCard";
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
@@ -9,6 +9,7 @@ import firebase from "firebase";
 import { UseTimestampToDate } from "../hooks/useTimestampToDate";
 import { useNavigate } from "react-router-dom";
 import { CategoryList } from "../components/modules/CategoryList";
+import SearchIcon from '@mui/icons-material/Search';
 
 export const Threads = () =>{
 
@@ -17,6 +18,7 @@ export const Threads = () =>{
     const [currentCategory,setCurrentCategory] = useState('default');
     const [bodyText,setBodyText] = useState('');
     const [me,setMe] = useState('');
+    const [searchWord,setSearchWord] = useState('');
 
     const history = useNavigate();
 
@@ -84,6 +86,36 @@ export const Threads = () =>{
         return unsubscribe;
     },[currentCategory]);
 
+    //投稿の検索
+    const doSearchPosts = () =>{
+        if(searchWord == ''){
+            alert('検索するワードを入力してください。');
+            return false;
+        }else{
+            const db = firebase.firestore();
+            const ref = db.collection(`posts`).where('category','==',currentCategory).orderBy('createdAt','desc');
+            let unsubscribe = () =>{};
+            unsubscribe = ref.onSnapshot((snapshot)=>{
+                const userPosts = [];
+                snapshot.forEach((doc)=>{
+                    const data = doc.data();
+                    if(~data.bodyText.indexOf(searchWord)){
+                        userPosts.push({
+                            id:doc.id,
+                            username:data.userName,
+                            bodyText:data.bodyText,
+                            createdAt:UseTimestampToDate(data.createdAt.seconds),
+                        });
+                    }
+                });
+                setPosts(userPosts);
+            },(error) => {
+                console.log(error);
+                alert('検索に失敗しました。。。\nもう一度お試しいただくか管理者にご連絡ください。');
+            });
+        }
+    }
+
     return(
         <>
         <Grid container className="mt-5">
@@ -93,6 +125,19 @@ export const Threads = () =>{
                 </Box>
             </Grid>
             <Grid item xs={10}>
+                <Box className="m-2">
+                    <TextField
+                        id="searchbox"
+                        variant="outlined"
+                        label="Search..."
+                        sx={{padding:'1px'}}
+                        size='small'
+                        onChange={(val)=>setSearchWord(val.target.value)}
+                    />               
+                    <IconButton onClick={doSearchPosts} type="button" aria-label="search">
+                        <SearchIcon />
+                    </IconButton>
+                </Box>
                 <Box className="w-75 m-auto">
                     {posts.map((post)=>{
                        return  (
