@@ -45,6 +45,7 @@ export const Threads = () =>{
         const ref = db.collection(`posts`);
         ref.add({
             userName:currentUser.displayName,
+            email:currentUser.email,
             bodyText,
             createdAt:firebase.firestore.FieldValue.serverTimestamp(),  
             category:currentCategory,

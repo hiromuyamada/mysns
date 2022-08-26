@@ -51,7 +51,7 @@ export const Header = () => {
           </>
           }
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            mysns
+            <Link href="../threads" sx={{textDecoration:"none",color:"#fff"}}>mysns</Link>
           </Typography>
           {!isLogin 
           ? <Button color="inherit" href='../../Login'>ログイン</Button>
