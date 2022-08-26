@@ -71,6 +71,7 @@ export const Threads = () =>{
                     userPosts.push({
                         id:doc.id,
                         username:data.userName,
+                        email:data.email,
                         bodyText:data.bodyText,
                         createdAt:UseTimestampToDate(data.createdAt.seconds),
                     });
@@ -148,7 +149,7 @@ export const Threads = () =>{
                         username={post.username} 
                         content={post.bodyText}  
                         time={post.createdAt}
-                        isMyPost={post.username == me.displayName ?true:false}
+                        isMyPost={post.email == me.email ?true:false}
                         />
                         )}
                     )}
