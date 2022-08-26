@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import firebase from 'firebase';
 import { useNavigate } from 'react-router-dom';
+import HomeIcon from '@mui/icons-material/Home';
 
 
 export const Header = () => {
@@ -51,7 +52,13 @@ export const Header = () => {
           </>
           }
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Link href="../threads" sx={{textDecoration:"none",color:"#fff"}}>mysns</Link>
+            {isLogin
+            &&
+            <IconButton onClick={()=>history('../threads')}>
+              <HomeIcon />
+            </IconButton>
+            }
+            {/* <Link href="../threads" sx={{textDecoration:"none",color:"#fff"}}>mysns</Link> */}
           </Typography>
           {!isLogin 
           ? <Button color="inherit" href='../../Login'>ログイン</Button>

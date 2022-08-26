@@ -7,13 +7,15 @@ export const PostedCard = (props) =>{
     const {username,content,time,isMyPost ,id} = props;
     //削除(自身の投稿のみ有効)
     const doDelete = (id) =>{
-        const {currentUser} = firebase.auth();
-        if(currentUser){
-            const db = firebase.firestore();
-            const ref = db.collection(`posts`).doc(id);
-            ref.delete().catch(()=>{
-                alert('削除に失敗しました。\nもう一度お試しください。')
-            })
+        if(window.confirm('削除してよろしいですか？')){
+            const {currentUser} = firebase.auth();
+            if(currentUser){
+                const db = firebase.firestore();
+                const ref = db.collection(`posts`).doc(id);
+                ref.delete().catch(()=>{
+                    alert('削除に失敗しました。\nもう一度お試しください。')
+                })
+            }
         }
     }
     return(

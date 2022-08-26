@@ -85,7 +85,7 @@ export const MyPage = () =>{
                                     ニックネーム
                                 </TableCell>
                                 <TableCell>
-                                    <TextField variant="outlined" value={displayName} onChange={(val)=>setDisplayName(val.target.value)} size="small" /> 
+                                    <TextField variant="outlined" label=' ' value={displayName} onChange={(val)=>setDisplayName(val.target.value)} size="small" /> 
                                     <Button className="ms-3" onClick={changeDisplayName}>変更する</Button>
                                 </TableCell>
                             </TableRow>
