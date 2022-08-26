@@ -44,7 +44,8 @@ export const Threads = () =>{
         const db = firebase.firestore();
         const ref = db.collection(`posts`);
         ref.add({
-            userName:currentUser.email,
+            userName:currentUser.displayName,
+            email:currentUser.email,
             bodyText,
             createdAt:firebase.firestore.FieldValue.serverTimestamp(),  
             category:currentCategory,
@@ -70,6 +71,7 @@ export const Threads = () =>{
                     userPosts.push({
                         id:doc.id,
                         username:data.userName,
+                        email:data.email,
                         bodyText:data.bodyText,
                         createdAt:UseTimestampToDate(data.createdAt.seconds),
                     });
@@ -99,7 +101,7 @@ export const Threads = () =>{
                 const userPosts = [];
                 snapshot.forEach((doc)=>{
                     const data = doc.data();
-                    if(~data.bodyText.indexOf(searchWord)){
+                    if(~data.bodyText.indexOf(searchWord) || ~data.userName.indexOf(searchWord)){
                         userPosts.push({
                             id:doc.id,
                             username:data.userName,
@@ -147,7 +149,7 @@ export const Threads = () =>{
                         username={post.username} 
                         content={post.bodyText}  
                         time={post.createdAt}
-                        isMyPost={post.username == me.email ?true:false}
+                        isMyPost={post.email == me.email ?true:false}
                         />
                         )}
                     )}
