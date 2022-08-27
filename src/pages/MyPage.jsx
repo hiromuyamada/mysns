@@ -32,7 +32,8 @@ export const MyPage = () =>{
                             email:data.email,
                             bodyText:data.bodyText,
                             createdAt:UseTimestampToDate(data.createdAt.seconds),
-                        });
+                            replyTo:data.replyTo,
+                            });
                     });
                     setPosts(userPosts);
                 },(error) => {
@@ -46,19 +47,21 @@ export const MyPage = () =>{
         return unsubscribe;
       },[]);
 
-
+      //ニックネーム変更
       const changeDisplayName = () =>{
         const unsubscribe = firebase.auth().onAuthStateChanged((userInfo)=>{
             if(userInfo){
-                const user = userInfo;
-                user.updateProfile({
-                    displayName,
-                }).then(()=>{
-                    alert('ニックネームを変更しました。');
-                }).catch((error)=>{
-                    console.log(error);
-                    alert('通信に失敗しました。\n接続環境を確認してみてください。');
-                })
+                if(window.confirm('ニックネームを変更します。よろしいですか？')){
+                    const user = userInfo;
+                    user.updateProfile({
+                        displayName,
+                    }).then(()=>{
+                        alert('ニックネームを変更しました。');
+                    }).catch((error)=>{
+                        console.log(error);
+                        alert('通信に失敗しました。\n接続環境を確認してみてください。');
+                    })
+                }
             }else{
                 history('../login');
             }}

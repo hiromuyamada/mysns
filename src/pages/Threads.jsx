@@ -19,6 +19,8 @@ export const Threads = () =>{
     const [bodyText,setBodyText] = useState('');
     const [me,setMe] = useState('');
     const [searchWord,setSearchWord] = useState('');
+    const [replyTo,setReplyTo] = useState(null);
+    const [hasReplyPosts,setHasReplyPosts] = useState([]);
 
     const history = useNavigate();
 
@@ -50,6 +52,7 @@ export const Threads = () =>{
             createdAt:firebase.firestore.FieldValue.serverTimestamp(),  
             category:currentCategory,
             like:0,
+            replyTo,
         }).then((docRef) =>{
             console.log('created!',docRef.id);
             setBodyText('');
@@ -66,6 +69,7 @@ export const Threads = () =>{
             const ref = db.collection(`posts`).where('category','==',currentCategory).orderBy('createdAt','desc');
             unsubscribe = ref.onSnapshot((snapshot)=>{
                 const userPosts = [];
+                const repliedPosts = [];
                 snapshot.forEach((doc)=>{
                     const data = doc.data();
                     userPosts.push({
@@ -74,9 +78,15 @@ export const Threads = () =>{
                         email:data.email,
                         bodyText:data.bodyText,
                         createdAt:UseTimestampToDate(data.createdAt.seconds),
+                        replyTo:data.replyTo,
                     });
+                    //リプライ投稿の場合、リプライ先の情報を保存
+                    if(data.replyTo){
+                        repliedPosts.push(data.replyTo.id);
+                    }
                 });
                 setPosts(userPosts);
+                setHasReplyPosts(repliedPosts);
             },(error) => {
                 console.log(error);
                 alert('データの読み込みに失敗しました。\nもう一度お試しください');
@@ -105,9 +115,11 @@ export const Threads = () =>{
                         userPosts.push({
                             id:doc.id,
                             username:data.userName,
+                            email:data.email,
                             bodyText:data.bodyText,
                             createdAt:UseTimestampToDate(data.createdAt.seconds),
-                        });
+                            replyTo:data.replyTo,
+                            });
                     }
                 });
                 setPosts(userPosts);
@@ -117,6 +129,42 @@ export const Threads = () =>{
             });
         }
     }
+
+        //返信の表示
+        const displayReply = async (id) =>{
+            let unsubscribe = () =>{};
+            const db = firebase.firestore();
+            const userPosts = [];
+            //返信元の取得(一番上に表示する)
+            let ref = await db.collection(`posts`).doc(id).get();
+                    const data = ref.data();
+                    userPosts.push({
+                        id:id,
+                        username:data.userName,
+                        email:data.email,
+                        bodyText:data.bodyText,
+                        createdAt:UseTimestampToDate(data.createdAt.seconds),
+                        replyTo:data.replyTo,
+                    });
+                
+            //返信の取得
+            ref = db.collection(`posts`).where('replyTo.id','==',id).orderBy('createdAt','desc');
+            unsubscribe = ref.onSnapshot((snapshot)=>{
+                snapshot.forEach((doc)=>{
+                    const data = doc.data();
+                    userPosts.push({
+                        id:doc.id,
+                        username:data.userName,
+                        email:data.email,
+                        bodyText:data.bodyText,
+                        createdAt:UseTimestampToDate(data.createdAt.seconds),
+                        replyTo:data.replyTo,
+                    });
+                });
+                setPosts(userPosts);
+            })
+        }
+    
 
     return(
         <>
@@ -150,12 +198,17 @@ export const Threads = () =>{
                         content={post.bodyText}  
                         time={post.createdAt}
                         isMyPost={post.email == me.email ?true:false}
+                        replyTo={post.replyTo}
+                        setReplyTo={setReplyTo}
+                        setIsOpen={setIsOpen}
+                        hasReply={hasReplyPosts.includes(post.id) ? true : false}
+                        displayReply = {displayReply}
                         />
                         )}
                     )}
                 </Box>
                 <Box style={{textAlign:"right",position:"fixed",bottom:"5em",right:"5em"}}>
-                    <IconButton onClick={() => setIsOpen(!isOpen)}>
+                    <IconButton onClick={() => {setIsOpen(!isOpen);setReplyTo(null);}}>
                         {!isOpen?
                         <AddCircleRoundedIcon style={iconButtonStyle} />
                         :

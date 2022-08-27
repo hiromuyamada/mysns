@@ -1,10 +1,13 @@
 import { Button, Card, CardContent, CardHeader, TextField } from "@mui/material"
 import firebase from "firebase";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
    
 export const AddCategory = () =>{
     const [categoryName,setCategoryName] = useState();
+    const history = useNavigate();
+
     const handleClick = () => {
         const {currentUser} = firebase.auth();
         const db = firebase.firestore();
@@ -16,6 +19,18 @@ export const AddCategory = () =>{
             console.log('created!',docRef.id);
         }).catch((error)=>console.log("Error",error));
     }
+
+    // useEffect(()=>{
+    //     const asy = async ()=> {
+    //         const currentUser = await firebase.auth();
+    //         if(currentUser.currentUser.email != 'admin@admin.com'){
+    //             alert("アクセス権限がありません。");
+    //             history('../../threads');
+    //         }
+    //     }
+    //     asy();
+    // },[]);
+
     return(
     <Card className="mt-5" variant="outlined" sx={{width:'300px',margin:'auto',padding:'10px'}}>
     <CardHeader title="新規カテゴリ追加" />
