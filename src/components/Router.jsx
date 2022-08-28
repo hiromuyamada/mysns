@@ -13,7 +13,7 @@ import { Header } from "./modules/Header";
 export const Router = () =>{
     return(
         <>
-        <BrowserRouter>
+        <BrowserRouter basename={process.env.PUBLIC_URL}>
             <Header />
             <Routes>
                 <Route path="login" element={<Login />} />
