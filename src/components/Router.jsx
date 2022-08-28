@@ -13,7 +13,7 @@ import { Header } from "./modules/Header";
 export const Router = () =>{
     return(
         <>
-        <BrowserRouter>
+        <BrowserRouter basename="https://hiromuyamada.github.io/mysns/">
             <Header />
             <Routes>
                 <Route path="login" element={<Login />} />
