@@ -61,7 +61,7 @@ export const Header = () => {
             {/* <Link href="../threads" sx={{textDecoration:"none",color:"#fff"}}>mysns</Link> */}
           </Typography>
           {!isLogin 
-          ? <Button color="inherit" href='../../Login'>ログイン</Button>
+          ? <Button color="inherit" href='./login'>ログイン</Button>
           : <LogoutButton />
           }
         </Toolbar>

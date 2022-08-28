@@ -15,6 +15,6 @@ export const LogoutButton = ()=> {
     };
 
     return(
-        <Button onClick={handleClick} color="inherit" href='../../Login'>ログアウト</Button>
+        <Button onClick={handleClick} color="inherit" href='./login'>ログアウト</Button>
     );
 }
