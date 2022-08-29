@@ -15,7 +15,7 @@ export const Threads = () =>{
 
     const [isOpen,setIsOpen] = useState(false);
     const [posts, setPosts] = useState([]);
-    const [currentCategory,setCurrentCategory] = useState('default');
+    const [currentCategory,setCurrentCategory] = useState('');
     const [bodyText,setBodyText] = useState('');
     const [me,setMe] = useState('');
     const [searchWord,setSearchWord] = useState('');
@@ -189,6 +189,9 @@ export const Threads = () =>{
                     </IconButton>
                 </Box>
                 <Box className="w-75 m-auto">
+                    {currentCategory == "" &&
+                    <Typography className="mt-5">←カテゴリを選択してください</Typography>
+                    }
                     {posts.map((post)=>{
                        return  (
                         <PostedCard 
