@@ -190,7 +190,7 @@ export const Threads = () =>{
                     <TextField
                         id="searchbox"
                         variant="outlined"
-                        label="Search..."
+                        label="投稿を検索"
                         sx={{padding:'1px'}}
                         size='small'
                         onChange={(val)=>setSearchWord(val.target.value)}
@@ -201,7 +201,10 @@ export const Threads = () =>{
                 </Box>
                 <Box className="w-75 m-auto">
                     {currentCategory == "" &&
-                    <Typography className="mt-5">←カテゴリを選択してください</Typography>
+                    <Typography className="mt-3">←カテゴリを選択してください</Typography>
+                    }
+                    {currentCategory != "" && posts.length==0 &&
+                    <Typography className="mt-3">まだ投稿がありません。</Typography>
                     }
                     {posts.map((post)=>{
                        return  (

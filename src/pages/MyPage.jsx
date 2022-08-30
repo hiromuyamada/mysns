@@ -51,7 +51,7 @@ export const MyPage = () =>{
       const changeDisplayName = () =>{
         const unsubscribe = firebase.auth().onAuthStateChanged((userInfo)=>{
             if(userInfo){
-                if(window.confirm('ニックネームを変更します。よろしいですか？')){
+                if(window.confirm('ニックネームを変更します。よろしいですか？\n※過去の投稿には反映されません。')){
                     const user = userInfo;
                     user.updateProfile({
                         displayName,
@@ -96,7 +96,7 @@ export const MyPage = () =>{
                     </Table>
                 </TableContainer>
 
-                <Typography className="mt-5">
+                <Typography className="mt-5 mb-3">
                     投稿一覧
                 </Typography>
                 <Box className="m-auto">
