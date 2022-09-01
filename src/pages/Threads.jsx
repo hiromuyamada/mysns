@@ -35,7 +35,7 @@ export const Threads = () =>{
     }
 
     const slideUpStyle = {
-        bottom: !isOpen ? "-1000px":"0",
+        bottom: !isOpen ? "-1000px":"5px",
         opacity:!isOpen ? "0":"1",
         transition:"300ms",
         position:"fixed",
@@ -237,7 +237,7 @@ export const Threads = () =>{
                     <Grid item xs={1} />        
                     <Grid item xs={8}>     
                         <Box className="m-auto" style={slideUpStyle}>
-                            <Card variant="outlined">
+                            <Card variant="outlined" style={{borderRadius:'15px', boxShadow: "3px 3px 3px 0px rgba(0, 0, 0, 0.45)",}}>
                                 <CardContent className="text-center">
                                     <TextField value={bodyText} onChange={(val)=>setBodyText(val.target.value)} fullWidth label="投稿する" multiline rows={6}/>
                                     <Button disabled={bodyText==''?true:false} className="mt-3" variant='outlined' onClick={handleClick}>送信</Button>

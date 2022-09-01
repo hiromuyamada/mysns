@@ -61,7 +61,7 @@ export const PostedCard = (props) =>{
                     {!replyTo &&
                     <Button variant="outlined" onClick={()=>{
                         setReplyTo({id,username});
-                        setIsOpen(true)         
+                        setIsOpen(true)     
                     }}>返信する</Button>
                     }
                     {hasReply &&
