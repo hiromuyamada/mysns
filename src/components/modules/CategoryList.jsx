@@ -42,7 +42,7 @@ export const CategoryList = (props) =>{
 
 
 return (
-    <Card variant="outlined">
+    <Card variant="outlined" className="ms-2" sx={{boxShadow: "2px 2px 2px 0px rgba(0, 0, 0, 0.2)",}}>
         <CardContent>                
     <List>
         <ListItem sx={{borderBottom:'1px solid #fd7e14'}}>

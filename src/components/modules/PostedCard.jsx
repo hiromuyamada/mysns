@@ -20,44 +20,56 @@ export const PostedCard = (props) =>{
         }
     }
 
+    const postCardStyle = {
+        borderRadius:"10px",
+        boxShadow: "3px 3px 3px 0px rgba(0, 0, 0, 0.45)",
+        "&:hover" : {
+            transform: "translateY(-4px)",
+            transition: "300ms",
+          }
+    }
+
+
         return(
             
-            <Card variant="outlined" className="border-2 mb-4">
+            <Card variant="outlined" className="border-2 mb-4" sx={postCardStyle}>
                 <CardContent sx={{textAlign:"left"}}>
-                    <Box>
-                    <AccountCircleRoundedIcon fontSize='medium' sx={{marginBottom:'4px',marginRight:'0.5rem',verticalAlign:"middle"}} />
-                    <Typography variant="h5" sx={{display:'inline'}}>
+                    <Box className="mb-3">
+                    <AccountCircleRoundedIcon fontSize='medium' sx={{marginBottom:'6px',marginRight:'0.5rem',verticalAlign:"middle"}} />
+                    <Typography variant="h6" className="fw-bold" sx={{display:'inline'}}>
                         {username}
                     </Typography>
-                    </Box>
-                    {replyTo &&
-                    <Typography className="mt-3">
-                        @{replyTo.username}
-                    </Typography>
-                    }
-                    <Typography className="mt-3 mb-2">
-                        {content}
-                    </Typography>
-
-                    <Typography variant="p">
-                        {time}
-                    </Typography>
-                    {!replyTo &&
-                    <Button onClick={()=>{
-                        setReplyTo({id,username});
-                        setIsOpen(true)         
-                    }}>返信する</Button>
-                    }
-                    {hasReply &&
-                        <Button onClick={()=>{displayReply(id);}}>
-                            返信を表示
-                        </Button>
-                    }
                     {isMyPost &&
                         <IconButton onClick={()=>doDelete(id)} sx={{float:'right',color:'red'}}>
                         <DeleteForeverIcon />
                         </IconButton>      
                     }
+                    </Box>
+                    {replyTo &&
+                    <Typography className="mt-3" sx={{color:"#1976d2"}}>
+                        &gt;&gt;@{replyTo.username}
+                    </Typography>
+                    }
+                    <Typography className="mt-1 mb-4 text-break">
+                        {content}
+                    </Typography>
+
+                    <Typography variant="p" className="mt-5 text-muted">
+                        {time}
+                    </Typography>
+                    <Box variant="span" sx={{float:"right"}}>
+                    {!replyTo &&
+                    <Button variant="outlined" onClick={()=>{
+                        setReplyTo({id,username});
+                        setIsOpen(true)     
+                    }}>返信する</Button>
+                    }
+                    {hasReply &&
+                        <Button variant="outlined" className="ms-2" onClick={()=>{displayReply(id);}}>
+                            返信を表示
+                        </Button>
+                    }
+                    </Box>
                 </CardContent>
             </Card>
             

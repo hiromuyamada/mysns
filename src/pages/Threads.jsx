@@ -4,7 +4,6 @@ import { PostedCard } from "../components/modules/PostedCard";
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import { useEffect, useState } from "react";
-import dayjs from "dayjs";
 import firebase from "firebase";
 import { UseTimestampToDate } from "../hooks/useTimestampToDate";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +20,8 @@ export const Threads = () =>{
     const [searchWord,setSearchWord] = useState('');
     const [replyTo,setReplyTo] = useState(null);
     const [hasReplyPosts,setHasReplyPosts] = useState([]);
+    const [isDisplayReplyMode, setIsDisplayReplyMode] = useState('false');
+    const [reloadTrigger,setReloadTrigger] = useState('false');
 
     const history = useNavigate();
 
@@ -34,10 +35,11 @@ export const Threads = () =>{
     }
 
     const slideUpStyle = {
-        bottom: !isOpen ? "-1000px":"0",
+        bottom: !isOpen ? "-1000px":"5px",
         opacity:!isOpen ? "0":"1",
         transition:"300ms",
         position:"fixed",
+        width:"55%",
     }
 
     //投稿する
@@ -91,12 +93,14 @@ export const Threads = () =>{
                 console.log(error);
                 alert('データの読み込みに失敗しました。\nもう一度お試しください');
             });
+            setIsDisplayReplyMode(false);
         }
         else{
             history('../login');
         }
         return unsubscribe;
-    },[currentCategory]);
+    
+    },[currentCategory,reloadTrigger]);
 
     //投稿の検索
     const doSearchPosts = () =>{
@@ -123,6 +127,7 @@ export const Threads = () =>{
                     }
                 });
                 setPosts(userPosts);
+                setIsDisplayReplyMode(false);
             },(error) => {
                 console.log(error);
                 alert('検索に失敗しました。。。\nもう一度お試しいただくか管理者にご連絡ください。');
@@ -163,6 +168,7 @@ export const Threads = () =>{
                 });
                 setPosts(userPosts);
             })
+            setIsDisplayReplyMode(true);
         }
     
 
@@ -174,12 +180,17 @@ export const Threads = () =>{
                             <CategoryList setCurrentCategory={setCurrentCategory} currentCategory={currentCategory} />
                 </Box>
             </Grid>
-            <Grid item xs={10}>
+            <Grid item xs={8}>
                 <Box className="m-2">
+                    {isDisplayReplyMode &&
+                    <Button variant="outlined" className="me-5" onClick={()=>{setIsDisplayReplyMode(false);setReloadTrigger(!reloadTrigger);}}>
+                            一覧に戻る
+                    </Button>
+                    }
                     <TextField
                         id="searchbox"
                         variant="outlined"
-                        label="Search..."
+                        label="投稿を検索"
                         sx={{padding:'1px'}}
                         size='small'
                         onChange={(val)=>setSearchWord(val.target.value)}
@@ -190,7 +201,10 @@ export const Threads = () =>{
                 </Box>
                 <Box className="w-75 m-auto">
                     {currentCategory == "" &&
-                    <Typography className="mt-5">←カテゴリを選択してください</Typography>
+                    <Typography className="mt-3">←カテゴリを選択してください</Typography>
+                    }
+                    {currentCategory != "" && posts.length==0 &&
+                    <Typography className="mt-3">まだ投稿がありません。</Typography>
                     }
                     {posts.map((post)=>{
                        return  (
@@ -220,10 +234,10 @@ export const Threads = () =>{
                     </IconButton>
                 </Box>   
                 <Grid container>    
-                    <Grid item xs={2} />        
-                    <Grid item xs={10}>     
-                        <Box className="w-50 m-auto" style={slideUpStyle}>
-                            <Card variant="outlined">
+                    <Grid item xs={1} />        
+                    <Grid item xs={8}>     
+                        <Box className="m-auto" style={slideUpStyle}>
+                            <Card variant="outlined" style={{borderRadius:'15px', boxShadow: "3px 3px 3px 0px rgba(0, 0, 0, 0.45)",}}>
                                 <CardContent className="text-center">
                                     <TextField value={bodyText} onChange={(val)=>setBodyText(val.target.value)} fullWidth label="投稿する" multiline rows={6}/>
                                     <Button disabled={bodyText==''?true:false} className="mt-3" variant='outlined' onClick={handleClick}>送信</Button>
